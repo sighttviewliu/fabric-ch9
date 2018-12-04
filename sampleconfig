@@ -1,0 +1,6 @@
+sudo mkdir -p /etc/hyperledger/fabric
+cd $GOPATH/src/github.com/hyperledger/fabric/sampleconfig
+sudo cp configtx.yaml /etc/hyperledger/fabric
+sudo cp core.yaml /etc/hyperledger/fabric
+sudo cp orderer.yaml /etc/hyperledger/fabric
+sudo cp msp/config.yaml /etc/hyperledger/fabric

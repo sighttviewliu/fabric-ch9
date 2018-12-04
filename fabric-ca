@@ -1,0 +1,6 @@
+go install -ldflags " -linkmode external -extldflags '-static -lpthread'" \
+           github.com/hyperledger/fabric-ca/cmd/..
+
+go install -ldflags " -linkmode external -extldflags '-static -lpthread'" github.com/hyperledger/fabric-ca/cmd/fabric-ca-client
+go install -ldflags " -linkmode external -extldflags '-static -lpthread'" github.com/hyperledger/fabric-ca/cmd/fabric-ca-server
+

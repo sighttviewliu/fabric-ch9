@@ -1,0 +1,11 @@
+cd $GOPATH/src/github.com/hyperledger/fabric
+ARCH=x86_64
+BASEIMAGE_RELEASE=0.3.1
+PROJECT_VERION=1.0.0
+LD_FLAGS="-X github.com/hyperledger/fabric/common/metadata.Version=${PROJECT_VERSION} \
+          -X github.com/hyperledger/fabric/common/metadata.BaseVersion=${BASEIMAGE_RELEASE} \
+          -X github.com/hyperledger/fabric/common/metadata.BaseDockerLabel=org.hyperledger.fabric \
+          -X github.com/hyperledger/fabric/common/metadata.DockerNamespace=hyperledger \
+          -X github.com/hyperledger/fabric/common/metadata.BaseDockerNamespace=hyperledger"
+CGO_CFLAGS=" " go install -ldflags "$LD_FLAGS -linkmode external -extldflags '-static -lpthread'" \
+           github.com/hyperledger/fabric/orderer

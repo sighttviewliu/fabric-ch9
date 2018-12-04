@@ -1,0 +1,5 @@
+PROJECT_VERSION=1.0.0
+CGO_CFLAGS=" " \
+           go install -tags "nopkcs11" \
+           -ldflags "-X github.com/hyperledger/fabric/common/configtx/tool/configtxgen/metadata.Version=${PROJECT_VERSION}" \
+           github.com/hyperledger/fabric/common/configtx/tool/configtxgen
