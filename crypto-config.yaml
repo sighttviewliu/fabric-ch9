@@ -1,0 +1,50 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    Spec:
+      - Hostname: orderer
+        CommonName: orderer.example.com
+
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  - Name: Org2
+    Domain: org2.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+###############################
+#
+# yaml语法简介：对象，数组，数值
+# name: A
+# age: 30
+# spouse:
+#   name: B
+#   age: 25
+# children:
+#   - name: C
+#     age: 5
+#   - name: D
+#     age: 3
+# Javascript语法：对象，数组，数值
+# {
+#   name: A,
+#   age: 30,
+#   spouse: {
+#     name: B,
+#     age: 25
+#   },
+#   children: [
+#     {name: C, age: 5},
+#     {name: D, age: 3}
+#   ]
+# } 
+#    
+###############################
+

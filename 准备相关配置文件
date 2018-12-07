@@ -4,3 +4,120 @@
 MSP相关文件msp/*   Peer Orderer 客户端      crypto-config.yaml       包括证书文件 签名私钥 用于管理实体在网络中的身份信息
 TLS相关文件tls/*   Peer Orderer 客户端      crypto-config.yaml       如果网络中启用了TLS 则节点需要准备TLS证书
 
+系统通道初始区块   Orderer                  configtx.yaml            用于启动Ordering服务 配置网络中策略
+文件
+orderer.gennesis.block
+
+新建应用通道交易   客户端                   configtx.yaml            用于新建应用通道 指定通道成员 访问策略
+文件
+businesschannel.tx
+
+锚节点配置更新交易 客户端                   configtx.yaml            用于配置通道中各组织的锚节点信息
+文件
+Org1MSPanchors.tx
+Org2MSGanchors.tx
+
+---------------------------------------------------------------------------
+Fabric网络定义：提供联盟链服务，联盟是由多个组织构成，每个组织中的成员提供节点服务，从而维护整个网络，通过身份进行权限管理
+
+---------------------------------------------------------------------
+域 组织 通道 节点 锚节点 组织成员
+Peer Orderer 客户端
+网络上的节点类型：
+1] Peer节点
+   Endorser背书节点
+   Leader领导节点
+   Committer提交节点
+   Anchor锚节点
+2] 客户端节点
+3] CA节点
+4] Orderer节点
+问题：为什么需要这些节点？为什么需要划分这么多的类型？
+首先要思考这些节点各自的职责，其次要思考联盟链网络组网的需要
+可以追问，上述每个类型节点都是必须的吗？
+
+------------------------------------------------------------------------------
+用户，users
+1] 作为某个组织的所属账户名称
+2] 作为整个联盟系统使用者的名称
+
+--------------------------------------------------------------------
+对于Fabric联盟链来说，这些关系的规划和建立，是首先要做的事情
+在网络中，这些角色、关系都被称之为实体
+
+------------------------------------------------------------------------
+在Fabric中，标准PKI服务是Fabric-ca
+此外，能够生成证书和私钥的工具也可以选择OpenSSL
+
+为什么需要Fabric项目提供的cryptogen工具？
+因为联盟链组织结构复杂时，如果通过手动方式不仅容易出错，而且没有效率
+所以通过基于crypto标准库实现的cryptogen工具自动化生成
+自动化生成的依赖条件就是crypto-config.yaml文件
+
+-------------------------------------------------------------------
+crypto-config.yaml
+两种类型：OrdererOrgs PeerOrgs 来定义若干组织
+每个组织多个节点，多个用户的描述为：Spec User
+
+------------------------------------------------------------------
+管理节点：网络启动前，生成启动文件；网络启动后，作为操作客户端
+
+---------------------------------------------------------------------
+查看层级：
+tree -L 4 crypto-config
+示例结果：
+$ tree -L 4 crypto-config
+crypto-config
+├── ordererOrganizations <== Level1
+│   └── example.com <== Level2
+│       ├── ca <== Level3
+│       │   ├── ca.example.com-cert.pem <== Level4
+│       │   └── d99e4ceb7faa8d853165df02ed7fd5c0060b0af163dbadf69f548397d9af7e8d_sk
+│       ├── msp
+│       │   ├── admincerts
+│       │   ├── cacerts
+│       │   └── tlscacerts
+│       ├── tlsca
+│       │   ├── 315d14071099dea6ee6683f13f02ac70797c89a4209f50e7b60cce699ece764f_sk
+│       │   └── tlsca.example.com-cert.pem
+│       └── users
+│           └── Admin@example.com
+└── peerOrganizations
+    ├── org1.example.com
+    │   ├── ca
+    │   │   ├── 1b90b856279127e26d362cf33bfe2ea1957edbe4ab13fc543a28a18dc7ae8665_sk
+    │   │   └── ca.org1.example.com-cert.pem
+    │   ├── msp
+    │   │   ├── admincerts
+    │   │   ├── cacerts
+    │   │   └── tlscacerts
+    │   ├── peers
+    │   │   ├── peer0.org1.example.com
+    │   │   └── peer1.org1.example.com
+    │   ├── tlsca
+    │   │   ├── 903965b3f43216501a8a85a9175eb613b69bf82522fdee7ba2dce777148df0b1_sk
+    │   │   └── tlsca.org1.example.com-cert.pem
+    │   └── users
+    │       ├── Admin@org1.example.com
+    │       └── User1@org1.example.com
+    └── org2.example.com
+        ├── ca
+        │   ├── 1934843dcd95c514d278bf270b1744f5cbe112188f8850c4363a77be235463cf_sk
+        │   └── ca.org2.example.com-cert.pem
+        ├── msp
+        │   ├── admincerts
+        │   ├── cacerts
+        │   └── tlscacerts
+        ├── peers
+        │   ├── peer0.org2.example.com
+        │   └── peer1.org2.example.com
+        ├── tlsca
+        │   ├── f24ff576eeb9c452f9832810f4f5b2b88d19be62038436dd5a60a57405fd045f_sk
+        │   └── tlsca.org2.example.com-cert.pem
+        └── users
+            ├── Admin@org2.example.com
+            └── User1@org2.example.com
+
+37 directories, 12 files
+
+-------------------------------------------------------------------------
