@@ -1,0 +1,15 @@
+ubuntu:xenial
+  fabric-baseos
+    fabric-baseimage
+      fabric-tools
+      fabric-buildenv
+        fabric-testenv
+      fabric-ccenv
+      fabric-javaenv
+      fabric-couch
+      fabric-zookeeper
+      fabric-kafka
+      fabric-openldap
+    fabric-peer
+    fabric-orderer
+    fabric-ca

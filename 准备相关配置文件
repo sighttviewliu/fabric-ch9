@@ -1,0 +1,6 @@
+提前生成的，用于启动的，配置文件
+
+配置               存放节点                 依赖配置                 主要功能
+MSP相关文件msp/*   Peer Orderer 客户端      crypto-config.yaml       包括证书文件 签名私钥 用于管理实体在网络中的身份信息
+TLS相关文件tls/*   Peer Orderer 客户端      crypto-config.yaml       如果网络中启用了TLS 则节点需要准备TLS证书
+
