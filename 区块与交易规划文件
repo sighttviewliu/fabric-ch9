@@ -1,0 +1,16 @@
+configtx.yaml
+作为区块与交易规划文件
+
+通过浏览$GOPATH/bin目录，关于fabric和fabric-ca的核心程序和配置运维工具包括：
+注意：fabric和fabric-ca的代码基线基于tag=v1.0.0
+configtxgen          配置工具
+configtxlator        配置工具
+cryptogen            配置工具
+fabric-ca-client     服务
+fabric-ca-server     服务
+orderer              服务
+peer                 服务
+
+
+
+

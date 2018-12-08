@@ -1,0 +1,26 @@
+Orderer节点启动时，需要使用初始区块文件，作为'系统通道'的初始化配置参考
+
+初始区块包含：Orderer服务配置信息，联盟信息
+
+初始区块通过configtxgen工具生成，依赖规划文件是configtx.yaml
+
+configtx.yaml描述了整个网络的配置和拓扑结构
+不同于crypto-config.yaml是用于实体和身份的规划，configtx.yaml是用于网络组织、成员各自设施的配置，以及拓扑结构关系的描述
+
+基于基线tag=v1.0.0代码，在源码仓目录下搜索可以找到
+$ find . -name "configtx.yaml"
+./test/feature/configs/configtx.yaml
+./sampleconfig/configtx.yaml
+./examples/cluster/config/configtx.yaml
+./examples/e2e_cli/configtx.yaml
+这里所述的规划文件是./examples/e2e_cli/configtx.yaml
+e2e_cli表示该示例是针对端对端end to end
+
+----------------------------------------------------------------------------------
+configtxgen工具需要从默认/etc/hyperledger/fabric路径查询规划文件
+而且，configtx.yaml中路径引用也是相对于上述路径
+
+
+
+
+

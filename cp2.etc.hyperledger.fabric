@@ -1,0 +1,5 @@
+sudo mkdir -p /etc/hyperledger/fabric/
+sudo cp crypto-config.yaml /etc/hyperledger/fabric/
+sudo cp -r crypto-config/ /etc/hyperledger/fabric/
+sudo cp configtx.yaml /etc/hyperledger/fabric/
+
