@@ -1,9 +1,9 @@
 Profiles:
-
+一系列通道配置模板，包括Orderer系统通道模板和应用通道类型模板
 Organizations:
-
+一系列组织结构定义，被其他部分引用
 Orderer：
-
+Orderer系统通道相关配置，包括Orderer服务配置和参与Ordering服务的可用组织信息
 Application:
-
+应用通道相关配置，主要包括参与应用网络的可用组织信息
 
