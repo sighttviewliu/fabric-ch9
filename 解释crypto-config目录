@@ -21,4 +21,36 @@ peerOrganizations包括所有Peer组织，每个组织下有节点和用户，�
 tlsca与ca描述基本雷同
 users下面主要包含msp和tls，msp托管users对应用户的证书，以及密钥是归属该msp吗？
 此外tls包含的证书和密钥也是归属tls吗？
-----------------------------------------------------------------
+---------------------------------------------------------------
+
+对于Orderer节点来说，需要将crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/目录下的内容，
+包括msp和tls两个子目录，复制到Orderer节点的/etc/hyperledger/fabric路径下，与Orderer自身配置一致
+
+对于Peer节点来说，则需要复制peerOrganizations下对应的身份证书文件。以org1的peer0为例，
+将crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/目录下的内容，包括msp和tls两个子目录，
+复制到Peer0节点的/etc/hyperledger/fabric路径下，与Peer自身配置一致
+
+对于客户端节点来说，为了方便操作，可将完整的crypto-config目录复制到/etc/hyperledger/fabric路径下，
+与configtx.yaml中配置所需要的引用要求一致
+
+注意：目前，组织结构一旦生成，如果要进行修改，只能手动对证书进行调整，因此需要提前做好联盟的规划，
+fabric未来版本或许会支持对组织结构和节点身份进行动态在线调整
+
+------------------------------------------------------------------
+1] 联盟链的设计需要规划组织结构/架构/组成
+2] crypto-config.yaml文件的描述，就是规划执行约定/说明书/方针/策略
+3] 管理员/总设计师/规划人员，通过cryptogen工具，依据crypyo-config.yaml要约执行规划输出，表示为crypto-config/目录与子目录和文件
+4] crypto-config/目录统一描述了按照要约规划的组织结构，但仍旧是逻辑层面，需要接下来按照节点物理要求分别部署
+5] crypto-config.yaml cryptogen crypto-config/ 分别是规划书，执行落地的工具，统一的落地结果在目录
+6] 实体与身份的映射，现实线下的自然人与线上的账户，域/组织/成员如何在网络内线上被管理，统统都被标记身份化，找到该身份就找到对应实体，验证该身份就验证了该实体
+7] crypto-config/目录，按照目录层级，一个组织下对应一个作用域，域中包含了ca msp orderers tlsca users 这些实体，各自分别有私钥和证书
+8] 仔细观察
+   $ cat crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem 
+   $ cat crypto-config/ordererOrganizations/example.com/ca/ca.example.com-cert.pem
+   两个证书文件的内容是一致的
+   从目录结构表示的语义上理解，ordererOrganizations组织，它的域是example.com，它下面有两个成员msp和ca，msp作为成员服务提供方保管着ca的证书，
+   而ca自己持有自己的证书以及对应的私钥，msp属于服务提供方，它有没有私钥其他成员并不关心
+
+
+
+
