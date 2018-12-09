@@ -6,3 +6,37 @@ go get github.com/onsi/ginkgo/ginkgo
 go get github.com/axw/gocov/...
 go get github.com/client9/misspell/cmd/misspell
 go get github.com/AlekSi/gocov-xml
+
+
+------------------------------------------------------
+go语法
+
+import (
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	math "math"
+)
+        包引用别名
+             包的路径，相对于$GOPATH/src/*
+             系统内置包，相对于/usr/local/go/src/*
+
+package XXX
+是没有带路径的
+其他地方引用一定要带上相对路径
+
+
+技巧：
+  动态过程中
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
+这样的表达式往往放在import () 包后面
+但_这样的引用名没有实际意义，那么这些赋值表达式的作用是什么呢？
+由于形如proto.Marshal这样的表达式执行时，可能会引起异常，所以通过var _ = 赋值表达式接入
+此外，proto.Marshal本身的作用是，检查引入的包是否可用，这里做一次包调用，用以尝试
+  静态过程中，也就是编译时期
+Go编译器通过编译该源码文档，检查源码符号，如果符号不存在，或者语义不符合编译器要求，就会在编译期报错/告警
+
+
