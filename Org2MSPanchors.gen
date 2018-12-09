@@ -1,0 +1,2 @@
+CHANNEL_NAME=businesschannel
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./Org2MSPanchors.tx -channelID ${CHANNEL_NAME} -asOrg Org2MSP

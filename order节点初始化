@@ -20,7 +20,55 @@ e2e_cli表示该示例是针对端对端end to end
 configtxgen工具需要从默认/etc/hyperledger/fabric路径查询规划文件
 而且，configtx.yaml中路径引用也是相对于上述路径
 
+----------------------------------------------------------------------------------
+TwoOrgsOrdererGenesis关键字，指示configtxgen工具，用于生成Ordering服务所需要的初始化区块文件
+TwoOrgsChannel关键字，指示configtxgen工具，用于生成通道初始配置的交易
+
+通过如下命令指定使用configtx.yaml文件中定义的TwoOrgsOrdererGenesis模板
+生成Ordering服务'系统通道'的初始区块文件
+
+排序类型在开发环境是solo，生产环境更换为kafka
+
+----------------------------------------------------------------------------------
+所生成的orderer.genesis.block需要复制到Orderer节点上
+与Orderer配置中ORDERER_GENERAL_GENESISFILE指定文件路径一致
+默认的路径选择为/etc/hyperledger/fabric
+在启动Ordering服务时需要使用orderer.genesis.block文件
+
+其中：Ordering服务就是order节点启动
 
 
+----------------------------------------------------------------------------------
+configtx.yaml 在configtxgen的参数约定下生成 orderer.genesis.block
+这是'系统通道'的'创世区块'文件，也被成为初始区块文件
 
+configtx.yaml 在configtxgen的参与约定下生成 businesschannel.tx
+这是'应用通道'的'配置交易'文件，也被成为初始区块文件
+
+因为在fabric中channel与ledger是1对1的关系，一个channel具有一个账本
+每个账本有对应的初始区块文件
+
+----------------------------------------------------------------------------------
+注意：
+生产部署的时候，crypto-config下的各角色身份凭证文件被部署到具体的节点，这些节点或许就是一台独立的主机
+亦或者是一个独立容器/沙盒
+
+通过configtx.yaml生成的orderer.genesis.block，businesschannel.tx，Org1MSPanchors.tx，Org2MSPanchors.tx
+也都需要分别部署到独立节点上，分别是orderer节点，客户端节点
+
+所有这些配置文件，都是基于相对/etc/hyperledger/fabric路径
+
+----------------------------------------------------------------------------------
+锚节点配置更新文件对组织的锚节点配置使用
+
+同样通道对应账本，不过businesschannel.tx Org1MSPanchors.tx Org2MSPanchors.tx对应同一个通道
+'应用通道'都是指businesschannel
+注意：在命令生成中，-channelID 就指明了这几个*.tx在同一个通道
+
+参考整体拓扑网络结构
+
+----------------------------------------------------------------------------------
+注意：
+所有用于启动的配置文件，被正确的部署到对应节点后，用于服务的启动使用
+但需要注意，Orderer节点先启动，Peer节点后启动，这个顺序是必须要遵守的
 

@@ -1,0 +1,2 @@
+CHANNEL_NAME=businesschannel
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./businesschannel.tx -channelID ${CHANNEL_NAME}
