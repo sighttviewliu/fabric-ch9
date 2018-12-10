@@ -1,0 +1,2 @@
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+$GOPATH/bin/orderer start

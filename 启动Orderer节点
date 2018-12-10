@@ -1,0 +1,65 @@
+启动Orderer节点
+初始配置
+1] 在/etc/hyperledger/fabric路径下放置orderer.yaml文件
+可以从fabric源码路径下./sampleconfig/orderer.yaml拷贝
+$ find . -name "orderer.yaml"./sampleconfig/orderer.yaml
+./examples/cluster/config/orderer.yaml
+2] 在/etc/hyperledger/fabric路径下放置身份文件msp目录，tls目录
+这些都是在crypto-config/目录中已经生成，必须选择关于ordererOrganizations中出现的msp/和tls/
+$ find /home/michael/scripts/crypto-config/ -name "msp"
+/home/michael/scripts/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp
+/home/michael/scripts/crypto-config/ordererOrganizations/example.com/msp
+
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
+
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp
+
+通过比较测试
+$ diff 
+/home/michael/scripts/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/cacerts/ca.example.com-cert.pem \
+/home/michael/scripts/crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem
+两个内容一致
+
+$ find /home/michael/scripts/crypto-config/ -name "tls"
+/home/michael/scripts/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/tls
+
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls
+
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls
+/home/michael/scripts/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls
+
+同理验证
+
+3] 在/etc/hyperledger/fabric路径下放置初始区块文件orderer.gennesis.block
+这个文件通过configtx.yaml结合configtxgen命令得到
+
+--------------------------------------------------------------------------------------------------------------
+如果要动态更新某几个配置，通过环境变量指示，让orderer节点服务变更
+ORDERER_GENERAL_LOGLEVEL=INFO                                                  输出日志的级别                    至少为INFO级别
+ORDERER_GENERAL_LISTENADDRESS=0.0.0.0                                          服务监听的地址                    ..
+ORDERER_GENERAL_LISTENPORT=7050                                                服务监听的端口                    默认7050
+ORDERER_GENERAL_GENESISMETHOD=file                                             初始区块的提供方式                文件方式
+ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/fabric/orderer.genesis.block      初始区块文件路径                  通过configtxgen生成，确保这里与实际路径一致
+ORDERER_GENERAL_LOCALMSPID=OrdererMSP                                          MSP的ID                           ..
+ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/fabric/msp                        MSP的文件路径                     通过cryptogen生成，确保这里与实际路径一致
+ORDERER_GENERAL_LEDGERTYPE=file                                                账本类型                          file，可持久化
+ORDERER_GENERAL_BATCHTIMEOUT=10s                                               出块最大间隔时间                  考虑，交易少，时间不宜过长，导致写盘延迟
+ORDERER_GENERAL_MAXMESSAGECOUNT=10                                             一个块中包含的最大交易数量        ..
+ORDERER_GENERAL_TLS_ENABLED=true                                               是否启用TLS                       安全
+ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/fabric/tls/server.key          TLS开启时指定签名私钥             通过cryptogen生成，确保这里与实际路径一致
+ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/fabric/tls/server.crt         TLS开启时指定身份证书位置         同上
+ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/fabric/tls/ca.crt]               TLS开启时指定信任的根证书位置     同上
+

@@ -1,0 +1,31 @@
+1] 针对/etc/hyperledger/fabric目录
+不要 $ sudo cryptogen
+     $ sudo configtxgen
+不要sudo su进入#完全root模式
+
+使用如下方式可行
+$ cd /etc
+$ sudo chown michael:michael -R hyperledger/
+此外
+$ FABRIC_CFG_PATH=$PWD 必须设置，在这里就是FABRIC_CFG_PATH=/etc/hyperledger/fabric
+
+2] 针对/var/hyperledger/production/orderer目录
+$ sudo mkdir -p /var/hyperledger/production/orderer
+$ sudo chown michael:michael -R hyperledger/
+$ FABRIC_CFG_PATH=$PWD 必须设置，在这里就是FABRIC_CFG_PATH=/etc/hyperledger/fabric
+
+--------------------------------------------------------------------------------------------
+针对配置管理工具cryptogen和configtxgen的依赖文件，crypto-config.yaml以及configtx.yaml
+必须放在FABRIC_CFG_PATH目录，然后在通过配置管理工具的指定命令生成crypto-config/以及orderer.genesis.block
+这些问题，官方给出了两个参考文件
+/home/michael/go/src/github.com/hyperledger/fabric/examples/e2e_cli/end-to-end.rst
+/home/michael/go/src/github.com/hyperledger/fabric/docs/source/build_network.rst
+指出了我碰到的问题：
+
+        [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
+
+关于orderer.genesis.block必须在FABRIC_CFG_PATH目录生成，因为orderer.genesis.block文件是编码的，无法直接修改
+而其内容部分严格依赖FABRIC_CFG_PATH路径
+
+---------------------------------------------------------------------------------------------
+

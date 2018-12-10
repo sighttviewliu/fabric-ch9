@@ -1,0 +1,11 @@
+crypto-config.yaml 是配置管理工具cryptogen依赖的文件
+configtx.yaml 是配置管理工具configtxgen依赖的文件
+
+对于orderer节点服务依赖的文件包括
+1] orderer.yaml
+2] msp/ tls/
+3] orderer.genesis.block
+
+对于peer节点服务依赖的文件包括
+...
+...
