@@ -28,4 +28,8 @@ $ FABRIC_CFG_PATH=$PWD 必须设置，在这里就是FABRIC_CFG_PATH=/etc/hyperl
 而其内容部分严格依赖FABRIC_CFG_PATH路径
 
 ---------------------------------------------------------------------------------------------
+GOBIN配置到profile或者~/.bashrc
+我没有配置，仅仅只是配置了$GOPATH
+然后每个需要执行$GOPATH/bin的地方，统统使用$ $GOPATH/bin/* 执行
+
 

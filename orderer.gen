@@ -1,1 +1,4 @@
+创建区块
 $GOPATH/bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./orderer.genesis.block
+查看区块
+$GOPATH/bin/configtxgen -profile TwoOrgsOrdererGenesis -inspectBlock ./orderer.genesis.block
