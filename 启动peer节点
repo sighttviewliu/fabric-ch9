@@ -1,0 +1,64 @@
+检查：
+1] 应用通道配置交易
+2] 锚节点配置更新文件
+
+配置:
+3] core.yaml
+4] 身份文件msp tls 对应自己的peer
+
+---------------------------------------------------------------------------
+下述依赖的环境变量
+CHANNEL_NAME=businesschannel
+
+我定义的文件：Org2MSPanchors.gen
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./Org2MSPanchors.tx -channelID ${CHANNEL_NAME} -asOrg Org2MSP
+
+我定义的文件：Org1MSPanchors.gen
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./Org1MSPanchors.tx -channelID ${CHANNEL_NAME} -asOrg Org1MSP
+
+我定义的文件：businesschannel.gen
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./businesschannel.tx -channelID ${CHANNEL_NAME}
+
+注意，因为configtx.yaml在/etc/hyperledger/fabric路径下，所以执行指令均在该目录执行
+
+---------------------------------------------------------------------------
+启动Peer节点检查细节：
+1] 在/etc/hyperledger/fabric路径下放置core.yaml，在源码fabric目录
+/home/michael/go/src/github.com/hyperledger/fabric/sampleconfig/有configtx.yaml core.yaml msp orderer.yaml
+其中configtx.yaml是运维配置工具configtxgen的依赖文件
+core.yaml对应peer节点服务的启动配置文件
+orderer.yaml对应orderer节点服务的启动配置文件
+
+2] 在/etc/hyperledger/fabric路径下放置msp目录，tls目录
+
+---------------------------------------------------------------------------
+注意：
+Ordering服务，就是已经开启并正常工作的Orderer节点提供的服务
+
+---------------------------------------------------------------------------
+peer节点对应环境变量
+CORE_LOGGING_LEVEL=INFO                                         日志级别                            至少INFO级别
+CORE_PEER_ID=peer0.org1.example.com                             Peer的ID                            不同Peer节点ID不同
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051                   服务地址                            网络内识别的地址，不同Peer节点不同
+CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051   组织以外发布地址                    不同Peer节点不同
+CORE_PEER_GOSSIP_USELEADERELECTION=true                         自动选举为组织代表                  开启
+CORE_PEER_GOSSIP_ORGLEADER=false                                组织代表节点从Ordering服务拉取区块  关闭
+CORE_PEER_LOCALMSPID=Org1MSP                                    所属组织的MSP的ID                   不同Peer节点不同
+CORE_PEER_MSPCONFIGPATH=msp                                     msp文件所在相对路径                 注意域实际相对路径一致，参考cryptogen输出
+CORE_VM_ENDPOINT=unix:///var/run/docker.sock                    Docker服务地址                      ubuntu路径相符
+CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=host                      链码容器使用的网络方式              none/host/brigde/container/user-defined，容器必须与Peer通网段
+CORE_PEER_TLS_ENABLED=true                                      启用TLS                             开启
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt  TLS开启时指定自己身份证书           参考cryptogen输出
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key   TLS开启时指定自己签名私钥           同上
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt  TLS开启时指定信任的根证书           同上
+
+----------------------------------------------------------------------------
+多个服务器，启动Peer节点
+
+注意：
+Peer启动以后，默认是没有加入网络，没有加入任何应用通道
+不会与Orderer服务建立连接
+
+通过客户端进行网络操作，加入通道操作
+客户端：
+就是配置管理操作员
