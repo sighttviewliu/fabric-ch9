@@ -141,5 +141,41 @@ listenAddress              peer节点服务监听的本地地址，当本地有�
                            注：接口是指ip，端口是指port
 chaincodeListenAddress     链码容器链接的监听地址，不指定的话，那么采用listenAddress指派
                            由于链码容器的连接目前不支持双向TLS认证，所以生产环境中建议指定为不同的地址，用于区别
+address                    peer节点服务对外的地址，特别是当服务运行在NAT设备时，该配置可以指定服务对外提供的可访问的地址
+addressAutoDetect          是否自动探测服务地址，当peer节点服务运行环境的地址是动态的情况时，该配置可以进行自动探测
+                           探测将内部地址作为peer服务的地址，该配置的默认值是关闭的
+                           注：启用TLS配置情况下，该选项必须关闭，避免与指定的域名发生冲突，造成认证失败
+gomaxprocs                 配置运行该Go应用的最大进程数量，runtime.GOMAXPROCS(n)，默认值-1，表示使用系统默认配置，可以不进行修改
+fileSystemPath             本地数据存放路径，包括账本，链码，一般指定的路径为/var/hyperledger/production
+BCCSP                      BlockChain Cryptographic Service Provider，密码库相关配置，包括算法，文件路径
+mspConfigPath              MSP目录所在的路径，可以为绝对路径，或者相对于配置目录的路径，一般建议为/etc/hyperledger/fabric/msp
+localMspId                 peer所关联的MSP的ID，一般为组织单位名称，需要与联盟配置中的名称一致
+profile                    是否启用Go自带的profiling支持进行调试，生产环境下需要关闭
 
+示例
+peer:
+  id: peer0                                    节点ID
+  networkId: business                          网络的ID
+  listenAddress: 0.0.0.0:7051                  节点在监听的本地网络接口地址
+  chaincodeListenAddress: 0.0.0.0:7052         链码容器连接时的监听地址
+  address: 0.0.0.0:7051                        peer节点对外的服务地址
+  addressAutoDetect: false                     是否自动探测对外服务地址
+  
+  gomaxprocs: -1                               Go进程数量限制
+  fileSystemPath: /var/hyperledger/production  本地数据存放路径
+
+  BCCSP:                                       加密库的配置
+    Default: SW                                软件模式
+    SW:                                        软件模式
+      Hash: SHA2                               Hash算法类型，目前仅支持SHA2
+      Security: 256                            安全级别64字长
+      FileKeyStore:                            本地私钥文件路径，默认指向<mspConfigPath>/keystore
+      KeyStore:                                密钥文件
+
+  mspConfigPath: msp                           MSP的本地路径
+  localMspId: DEFAULT                          peer所关联的MSP的ID
+
+  profile:                                     是否启用Go自带的profiling进行调试
+    enabled: false                             是否开启
+    listenAddress: 0.0.0.0:6060                监听接口
 
