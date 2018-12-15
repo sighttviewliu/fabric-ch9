@@ -132,7 +132,7 @@ peer:
         enabled:     false
         listenAddress: 0.0.0.0:6060
 
-
+---------------------------------------------------------------------------------------
 1] 通用部分
 id                         peer节点在网络中的id信息，用于区别不同的节点
 networkId                  网络自身的id，逻辑上可以通过id指定多个隔离的网络
@@ -178,4 +178,41 @@ peer:
   profile:                                     是否启用Go自带的profiling进行调试
     enabled: false                             是否开启
     listenAddress: 0.0.0.0:6060                监听接口
+
+-------------------------------------------------------------------------
+2] gossip
+gossip，说三道四，四通八达
+职责：负责orderer，peer节点之间，通过gossip消息，进行p2p通信
+
+2.1] 启动和连接参数
+bootstrap                               启动节点后向那些节点发起gossip连接，用于加入网络，要求这些节点与本地节点需要属于同一组织
+endpoint                                本节点在同一组织内的gossip id，默认为peer.address值
+maxBlockCountToStore                    保存到内存中的区块个数上线，如果超过上限则丢弃
+skipBLockVerification                   是否不对区块消息校验，默认取值为false
+dialTimeout                             gRPC连接拨号的超时
+connTimeout                             建立连接的超时
+aliveTimeInterval                       定期发送Alive心跳消息的时间间隔
+aliveExpirationTimeout                  Alive心跳消息的超时时间
+reconnectInterval                       连接断开后重新建立连接的尝试时间间隔
+externalEndpoint                        本节点被组织外的节点感知时的地址，默认为空值，表示不允许被其他组织感知
+
+2.2] 消息
+maxPropagationBurstLatency              保存消息/消息驻留的最大时间，超过该时间，那么触发转发消息给其他节点
+maxPropagationBurstSize                 保存消息/消息驻留的最大数量，超过该数量，那么触发转发消息给其他节点
+propagateIterations                     节点不限制，同一消息的消息转发的次数
+propagatePeerNum                        指示推送消息给指定个数的节点，规定为节点的数量
+pullInterval                            拉取消息的时间间隔
+pullPeerNum                             指示允许从指定个数的节点拉取消息
+requestStateInfoInterval                从节点拉取状态信息，StateInfo，消息的时间间隔
+publishStateInfoInterval                向其他节点推送状态信息，StateInfo，消息的时间间隔
+stateInfoRetentionInterval              状态信息,StateInfo，消息的超时时间
+publishCertPeriod                       节点启动后，在消息类型为心跳消息中嵌入证书的等待时间
+recvBuffSize                            本节点收取消息的允许的缓存大小
+sendBuffSize                            本节点发送消息的允许的缓存大小
+digestWaitTime                          本节点处理摘要数据的等待时间
+requestWaitTime                         本节点处理nonce数据的等待时间，nonce随机数在HTTPS中作为协商时挑战使用值
+responseWaitTime                        本节点处理，终止拉取数据，处理的等待时间
+
+2.3] 选举
+ 
 
