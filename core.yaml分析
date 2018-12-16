@@ -342,8 +342,93 @@ vm:
 
 
 -----------------------------------------------------------------------------------------------
+chaincode 链码的配置部分
 
-                     
+id                                             记录链码信息，包括：路径，名称，版本，该信息以标签形式写道链码容器设施
+builder                                        本地编译环境，是Docker镜像
+golang                                         Go语言的链码部署生成镜像的基础Docker镜像
+car                                            car格式的链码部署生成镜像的基础Docker镜像
+java                                           生成Java链码容器时候的基础镜像信息
+startuptimeout                                 启动链码容器超时，等待超时时间后还没有收到链码端的注册消息，那么被认为启动失败
+executetimeout                                 invoke和initialize命令执行超时设定
+deploytimeout                                  部署链码的命令执行超时设定
+mode                                           执行链码的模式，dev表示允许本地直接运行链码，为了方便调试
+                                               net表示在容器中运行链码
+keepalive                                      peer节点和链码之间的心跳超时设定，如果小于或者等于0，表示关闭该设定
+system                                         链码类型为系统级别的链码，一系列设定
+logging                                        链码容器日志的配置规则
+
+
+示例：
+chaincode:
+  id:                                          动态标记链码的信息，该信息会以标签形式写道链码容器
+    path:
+    name: 
+ 
+  builder: $(DOCKER_NS)/fabric-ccenv:$(ARCH)-$(PROJECT_VERSION)
+                                               通用的本地编译环境，是一个Docker镜像
+
+  golang:                                      Go语言的链码部署生成镜像的基础Docker基础镜像
+    runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
+  car:                                         car格式的链码部署生成镜像的基础Docker镜像
+    runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
+  java:                                        生成Java链码容器时候的基础镜像信息
+    Dockerfile: |
+      from $(DOCKER_NS)/fabric-javaenv:$(ARCH)-$(PROJECT_VERSION)
+
+  startuptimeout: 300s                         启动链码容器的超时
+  executetimeout: 30s                          invoke和initialize命令执行的超时设定
+  deploytimeout: 30s                           部署链码的命令执行超时设定
+
+  mode: net                                    执行链码的模式设定
+
+  keepalive: 0                                 peer节点和链码之间的心跳超时设定，小于或者等于0意味着该设定关闭
+
+  system:                                      系统链码的配置
+    cscc: enable
+    lscc: enable
+    vscc: enable
+    qscc: enable
+
+  logging:                                     链码容器日志配置
+    level: info
+    shim: warning
+    format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{short-func} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+
+------------------------------------------------------------------------------------------
+ledger
+
+账本的配置
+blockchain                                     设置系统区块链的整体配置，该配置项目前在v1.0.0仍可用，在未来版本会被删除
+state                                          状态数据库的配置信息，包括类型，目前支持goleveldb和couchdb，前者轻量级性能高
+                                               后者支持复杂格式的数据查询，数据库连接信息，例如：查询最大返回记录数据等能力
+history                                        是否使用goleveldb来记录键值的历史，该配置向默认开启
+
+示例：
+ledger:
+  blockchain:
+
+  state:                                       状态数据库配置
+    stateDatabase: goleveldb                   状态数据库的类型选择
+    couchDBConfig:                             如果启用couchdb数据库，配置连接信息
+      couchDBAddress:                          127.0.0.1:5984
+      username:                                
+      password:         
+      maxRetries: 3                            出错后的重试次数设置
+      maxRetriesOnStartup: 10                  关于启动方面的，出错后的重试次数
+      requestTimeout: 35s                      请求超时的设定
+      queryLimit: 10000                        每个查询的最大返回记录数量
+
+  history:  
+    enableHistoryDatabase: true                关于历史数据使用goleveldb来记录键值的历史，默认为开启
+
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+                                                
 
 
  
