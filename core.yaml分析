@@ -214,5 +214,137 @@ requestWaitTime                         本节点处理nonce数据的等待时�
 responseWaitTime                        本节点处理，终止拉取数据，处理的等待时间
 
 2.3] 选举
+useLeaderElection                       是否允许节点之间动态进行代表，Leader，节点的选举，默认选择禁止，细节参见Kafka
+orgLeader                               本节点是否指定为组织的代表节点，与useLeaderElection不能同时设置为true值
+election.startupGracePeriod             代表成员选举等待的时间
+election.membershipSampleInterval       检查成员稳定性的采样间隔
+election.leaderAliveThreshold           Peer尝试进行选举的等待超时
+election.leaderElectionDuration         Peer宣称自己作为代表节点的等待时间
+
+示例：
+peer:
+  gossip:
+    bootstrap: 127.0.0.1:7051                                         启动节点后，执行gossip连接的初始节点
+    useLeaderElection: false                                          是否动态选举代表节点
+    orgLeader: true                                                   是否指定本节点为组织代表节点
+    endpoint:                                                         本节点在组织内的gossip id
+   
+    maxBlockCountToStore: 100                                         保存到内存中的区块个数上限
+    maxPropagationBurstLatency: 10ms                                  保存消息的最大时间，超过则触发转发给其他节点
+    maxPropagationBurstSize: 10                                       保存的最大消息个数，超过则触发转发给其他节点
+
+    propagateIterations: 1                                            消息转发的次数
+    propagatePeerNum: 3                                               推送消息给指定个数的节点
+    pullInterval: 4s                                                  拉取消息的时间间隔
+
+    pullPeerNum: 3                                                    从指定个数的节点拉取消息
+    requestStateInfoInterval: 4s                                      从节点拉取状态信息statinfo消息的时间间隔
+    publishStateInfoInterval: 4s                                      向其他节点推送状态信息statinfo消息的时间间隔
+    statInfoRetectionInterval:                                        状态信息消息的超时时间
+    publishCertPeriod: 10s                                            本节点启动后在新条消息中包括证书的等待时间间隔
+    skipBlockVerification: false                                      是否不对区块消息进行校验，默认设置为false值
+    dialTimeout: 3s                                                   gRPC连接拨号的超时时间间隔
+    connTimeout: 2s                                                   建立连接的超时时间间隔
+    recvBuffSize: 20                                                  收取消息的缓冲大小
+    sendBUffSize: 200                                                 发送消息的缓冲大小
+    digestWaittime: 1s                                                处理摘要数据的等待时间间隔
+    requestWaitTime: 1s                                               处理nonce数据的等待时间间隔
+    responseWaitTime: 2s                                              终止拉取数据处理的等待时间间隔
+    aliveTimeInterval: 5s                                             定期发送Alive心跳消息的时间间隔
+    aliveExpirationTimeout: 25s                                       Alive心跳消息的超时时间间隔
+    reconnectInterval: 25s                                            连接断开后重新建立连接的时间间隔
+    externalEndpoint:                                                 节点被组织外界点感知的地址指派
+
+    election:
+      startupGracePeriod: 15                                          代表成员选举等待的时间间隔
+      membershipSapleInterval: 1s                                     检查成员稳定性的采样间隔
+      leaderAliveThreshold: 10s                                       peer尝试进行选举的等待时间间隔
+      leaderElectionDuration: 5s                                      peer宣布自己为代表节点的等待时间间隔
+
+-----------------------------------------------------------------------------------------------------
+3] events
+
+address                                            本节点本地监听的地址，默认在所有网络接口上进行监听，服务端口为7053
+buffersize                                         最大进行缓冲的消息数，如果超过缓冲约定，那么向缓冲中发送时间消息的话，就会被阻塞
+timeout                                            如果缓冲已经满的情况下，那么向缓冲中发送消息就会发生超时
+                                                   如果设置为小于0的值，表示直接丢弃消息
+                                                   如果设置为等于0的值，表示先阻塞然后等待发出
+                                                   如果设置为大于0的值，表示先阻塞然后尝试发送直到遇到超时，如果超时依旧不能发送成功，那么丢弃该消息
+
+
+示例：
+peer:
+  events:
+    address: 0.0.0.0: 7053          本地服务监听地址
+    buffersize: 100
+    timeout: 10ms
+
+-----------------------------------------------------------------------------------------------
+4] tls
+
+当tls检查该配置是否启用时，指定1>身份验证证书，2>签名私钥，3>信任的根CA证书，4>校验的主机名
+
+示例：
+peer:
+  tls:
+    enabled: false                         默认不开启TLS验证功能
+    cert:
+      file: tls/server.crt                 本节点当前服务的身份验证证书，公开可见，访问者通过该证书进行验证
+    key:
+      file: tls/server.key                 本节点当前服务的签名私钥文件
+    rootcert:
+      file: tls/ca.crt                     信任的根CA的证书文件
+    
+    serverhostoverride:                    是否指定进行TLS握手时的主机名称
+
+
+---------------------------------------------------------------------------------------------------------------
+vm 容器虚拟机器部分
+
+链码需要执行环境支持，链码的执行环境通过虚拟机设施支持
+目前只有Docker容器
+
+endpoint                                         Docker Daemon的地址，默认是本地套接字文件
+docker.tls                                       Docker Daemon启动TLS时的证书配置，包括信任的根CA证书，本节点作为服务的服务证书，签名私钥
+docker.attachStdout                              Docker Daemon是否启用绑定到标准输出，启用后的话，链码容器的输出消息会绑定到标注你输出
+                                                 用于日志方式调试使用
+docker.hostConfig                                Docker Daemon的主机配置，包括：网络配置，日志，内存
+                                                 这些配置会在启动链码容器的时候使用
+                                                 
+
+
+示例：
+vm:
+  endpoint: unix:///var/run/docker.sock                                   Docker Daemon的地址
+
+  docker:
+    tls:                                                                  Docker Daemon启用TLS时证书配置
+      enabled: false
+      ca: 
+        file: docker/ca.crt
+      cert:
+        file: docker/tls.crt
+      key:
+        file: docker/tls.key
+
+    attachStdout: false                                                   Docker Daemon是否启用连接到标准输出
+   
+    hostConfig:                                                           Docker Daemon的主机配置内容，包括网络配置，日志，内存
+      NetworkMode: host                                                   host意味着链码容器设施直接使用所在主机的网路命名空间
+      Dns:
+        #- 192.168.0.1
+      LogConfig:
+        Type: json-file
+        Config:
+          max-size: "50m"
+          max-file: "5"
+      Memory: 2147483648
+
+
+-----------------------------------------------------------------------------------------------
+
+                     
+
+
  
 
