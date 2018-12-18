@@ -9,8 +9,8 @@ Org2: peer0 peer1
 管理者（算不上节点，当前就是指我这个操作员）
 
 -------------------------------------------------------------------------------------------
-在虚拟机orderer启动
-$GOPATH/bin/orderer start
+在虚拟机orderer启动，注意启动的时候ORDERER_GENERAL_LISTENADDRESS=192.168.1.5 ORDERER_GENERAL_LISTENADDRESS=orderer.example.com
+ORDERER_GENERAL_LISTENADDRESS=192.168.1.5 $GOPATH/bin/orderer start
 
 在虚拟机peer启动（Org1 peer0）
 $GOPATH/bin/orderer node start
@@ -22,9 +22,46 @@ $GOPATH/bin/orderer node start
 1] 创建通道
 必须使用'加入联盟中的组织的管理员'身份才能够创建'应用通道'
 注意：应用通道，英文注解为businesschannel
+在客户端使用Org1的管理员身份，创建应用通道
+需要指定：
+msp的id信息
+msp文件路径
+ordering服务的tls证书位置
+网络中的ordering服务地址
+应用通道名称
+交易文件
 
+创建应用通道成功后，会自动在本地生成该应用通道同名称的初始区块
+businesschannel.block文件
+只有拥有该文件，才能执行加入该应用通道的处理
 
+示例：
+CHANNEL_NAME=businesschannel
+CORE_PEER_LOCALMSPID="Org1MSP"
+CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+CORE_PEER_TLS_ENABLED=true
 
+$GOPATH/bin/peer channel create -o orderer.example.com:7050 -c ${CHANNEL_NAME} -f ./businesschannel.tx --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
+我的实验平台crypto-config/目录中没有生成orderers/节点配置内容，改为使用管理员的配置文件
+$GOPATH/bin/peer channel create -o orderer.example.com:7050 -c ${CHANNEL_NAME} -f ./businesschannel.tx --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+-----------------------------------------------------------------------------------------------
+/etc/hosts文件
+1] 快速DNS解析
+2] IP映射
+示例：
+192.168.1.5     orderer.example.com       orderer
+注意：
+每台连接的机器都需要配置上述的内容，便于域名解析
+
+生效需要
+$ sudo service networking restart
+
+测试
+$ping orderer.example.com
+或者
+$ping orderer
+-----------------------------------------------------------------------------------------------
 
 
