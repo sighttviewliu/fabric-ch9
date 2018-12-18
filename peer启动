@@ -16,9 +16,11 @@ FABRIC_CFG_PATH=/etc/hyperledger/fabric \
 $GOPATH/bin/peer node start
 
 ----------------------------------------------------------------------------------------------
+因为没有搞清楚TLS的具体用法，所以先将TLS设置为false
+CORE_PEER_TLS_ENABLED=true -> false
+
 cp -r /etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp /etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/tls /etc/hyperledger/fabric/
 
 在/etc/hyperledger/fabric路径下
 $GOPATH/bin/peer node start
-
 
