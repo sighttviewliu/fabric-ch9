@@ -9,6 +9,10 @@ Org2: peer0 peer1
 管理者（算不上节点，当前就是指我这个操作员）
 
 -------------------------------------------------------------------------------------------
+$GOPATH/bin/configtxgen -profile TwoOrgsChannel -inspectChannelCreateTx ./businesschannel.tx
+查看genesis.block 以及businesschannel.tx 都是使用*.tx
+
+-------------------------------------------------------------------------------------------
 在虚拟机orderer启动，注意启动的时候ORDERER_GENERAL_LISTENADDRESS=192.168.1.5 ORDERER_GENERAL_LISTENADDRESS=orderer.example.com
 ORDERER_GENERAL_LISTENADDRESS=192.168.1.5 $GOPATH/bin/orderer start
 
