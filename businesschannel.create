@@ -1,7 +1,0 @@
-CHANNEL_NAME=businesschannel
-CORE_PEER_LOCALMSPID="Org1MSP"
-CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-CORE_PEER_TLS_ENABLED=true
-
-#$GOPATH/bin/peer channel create -o orderer.example.com:7050 -c ${CHANNEL_NAME} -f ./businesschannel.tx --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-$GOPATH/bin/peer channel create -o orderer.example.com:7050 -c ${CHANNEL_NAME} -f ./businesschannel.tx --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/tlscacerts/tlsca.example.com-cert.pem
