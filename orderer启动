@@ -1,5 +1,5 @@
 ORDERER_GENERAL_LOGLEVEL=INFO \
-ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 \
+ORDERER_GENERAL_LISTENADDRESS=192.168.1.5 \
 ORDERER_GENERAL_LISTENPORT=7050 \
 ORDERER_GENERAL_GENESISMETHOD=file \
 ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/fabric/orderer.genesis.block \
@@ -16,4 +16,6 @@ FABRIC_CFG_PATH=/etc/hyperledger/fabric \
 $GOPATH/bin/orderer start
 
 
-
+--------------------------------------------------------------------------------------
+因为没有搞清楚TLS的用法，所以启动节点的时候，将TLS开关设置为false
+ORDERER_GENERAL_TLS_ENABLED=true -> false
